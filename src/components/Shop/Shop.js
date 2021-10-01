@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { addToDb, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
@@ -37,8 +38,17 @@ useEffect(  () => {
     }, [products]);
 
    const handleAddToCart= (product) => {
-    //    console.log(product)
-    const newCart = [...cart, product];
+       const exists=cart.find(pd=> pd.key=== product.key);
+       let newCart=[]
+        if(exists){
+            const rest= cart.filter(pd=> pd.key !== product.key);
+            exists.quantity=exists.quantity+1;
+            newCart=[...rest, product]
+        }
+        else{
+            product.quantity=1;
+            newCart= [...cart, product];
+        }
     setCart(newCart);
 
     //save to lacol storage
@@ -69,7 +79,11 @@ useEffect(  () => {
                 }
                 </div>
             <div className="cart-container">
-                <Cart cart={cart} quantity={quantity}></Cart>
+                <Cart cart={cart} quantity={quantity}
+                ><Link to="/review">
+                    <button className="regular-btn">Review Your Order</button>
+                </Link>
+                </Cart>
             </div>
         </div>
         </>
