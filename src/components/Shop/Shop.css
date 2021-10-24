@@ -18,3 +18,16 @@
     font-size: 19px;
     margin-bottom: 5px;
 }
+
+.pagination{
+    margin: 30px;
+}
+.pagination button{
+    padding: 3px 10px;
+    margin-right: 15px;
+}
+
+.pagination .selected{
+    background-color: rgb(33, 33, 194);
+    color: white;
+}
