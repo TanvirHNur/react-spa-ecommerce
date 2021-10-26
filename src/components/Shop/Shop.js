@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import useCart from '../../hooks/UseCart';
 import { addToDb, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
@@ -8,12 +9,12 @@ import './Shop.css'
 const Shop = () => {
     
     const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useCart(products);
+    const [page, setPage] =useState(0);
     const [pageCount, setPageCount]=useState(0);
-    const [page, setPage] =useState(0)
     //products to be rendered on the UI
     const [displayProducts, setDisplayProducts] = useState([]);
-
+    const size =10;
 
 
 // const [quantity, setQuantity] = useState({})
@@ -22,25 +23,25 @@ const Shop = () => {
 //     setQuantity(getStoredDat)
 //  } ,[]) 
     useEffect( () => {
-        fetch('http://localhost:5000/products')
+        fetch(`http://localhost:5000/products?page=${page}&&size=${size}`)
         .then(res => res.json())
         .then(data => {
             setProducts(data.products)
         setDisplayProducts(data.products)
         const count = data.count;
-        const pageNumber=Math.ceil(count/10);
+        const pageNumber=Math.ceil(count/size);
         setPageCount(pageNumber);
 
     })
         
-    } , []);
+    } , [page]);
 
     useEffect( () => {
         if(products.length){
             const savedCart = getStoredCart();
             const storedCart = []
         for(const key in savedCart){
-            console.log(key, savedCart[key])
+            // console.log(key, savedCart[key])
             const addeddProduct = products.find(product => product.key === key);
             if(addeddProduct){
                 const quantity = savedCart[key];
@@ -99,7 +100,7 @@ const Shop = () => {
                         className={number===page ? 'selected' : ''}
                             key={number}
                             onClick={()=> setPage(number)}
-                        >{number}</button> )
+                        >{number+1}</button> )
                     }
                 </div>
                 </div>
